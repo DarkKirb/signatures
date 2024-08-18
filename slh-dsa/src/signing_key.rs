@@ -143,8 +143,12 @@ impl<P: ParameterSet> SigningKey<P> {
         let ctx_len_bytes = ctx_len.to_be_bytes();
 
         // TODO - figure out what to do about this allocation. Maybe pass a chained iterator to slh_sign_internal?
-        let ctx_msg = [&[0], &ctx_len_bytes, ctx, msg].concat();
-        Ok(self.slh_sign_internal(&ctx_msg, opt_rand))
+        let mut ctx_msg = alloc::vec::Vec::with_capacity(1 + ctx_len_bytes.len() + ctx.len() + msg.len());
+        ctx_msg.push(0);
+        ctx_msg.extend_from_slice(&ctx_len_bytes);
+        ctx_msg.extend_from_slice(ctx);
+        ctx_msg.extend_from_slice(msg);
+        Ok(self.slh_sign_internal(&ctx_msg[..], opt_rand))
     }
 
     /// Serialize the signing key to a new stack-allocated array

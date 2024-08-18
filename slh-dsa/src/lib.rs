@@ -1,4 +1,4 @@
-#![cfg_attr(not(feature = "alloc"), no_std)]
+#![no_std]
 #![doc = include_str!("../README.md")]
 #![warn(clippy::pedantic)] // Be pedantic by default
 //#![allow(non_snake_case)] // Allow notation matching the spec
@@ -6,6 +6,7 @@
 #![allow(clippy::similar_names)] // TODO: Consider resolving these
 #![allow(clippy::clone_on_copy)] // Be explicit about moving data
 #![deny(missing_docs)] // Require all public interfaces to be documented
+
 
 //! # Usage
 //! This crate implements the Stateless Hash-based Digital Signature Algorithm (SLH-DSA) based on the finalized
@@ -45,6 +46,9 @@
 //!
 //! assert!(vk_deserialized.verify(message, &sig).is_ok())
 //! ```
+
+#[cfg(not(feature = "alloc"))]
+extern crate alloc;
 
 pub use signature;
 
